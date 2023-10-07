@@ -7,7 +7,7 @@ Issue: [Desafio Varstation](https://github.com/Varstation/desafio-devops-varsomi
 
 Seguindo os padrões solicitados na descrição do desafio, realizei o desenho de arquitetura para análise de dados de espectometria no provedor AWS.
 
-![Arquitetura](arquitetura-desafio-varstation.png)
+![Arquitetura](arquiteturaa-desafio-varstation.png)
 
 ## Recursos utilizados na arquitetura
 
