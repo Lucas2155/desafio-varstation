@@ -50,17 +50,17 @@ Seguindo os padrões solicitados na descrição do desafio, realizei o desenho d
 1. O usuário irá acessar o site através do DNS que está registrado no Route 53.
 2. O Shield irá analisar as solicitações do usuário, caso ele perceba que o site está sofrendo ataque DDoS, ele irá bloquear o IP de origem.
 3. O usuário será direcionado através do Load balancer para o front-end Django.
-4. Quando o usuário realizar um upload de arquivo através do front-end, será armazenado no bucket S3 'Upload'. Este bucket será configurado com um lifecycle de 1 ano.
+4. Quando o usuário realizar um upload de arquivo através do front-end, será armazenado no bucket S3 'Upload'. Inicialmente os arquivos serão armazenados no S3 Standard, após 30 dias será migrado para o S3 Standard Infrequent Access, após 90 dias será migrado para o S3 Glacier, e por fim após 180 dias será movido para o S3 Glacier Deep Archive. Os arquivos serão deletados após 1 ano.
 5. Caso o usuário faça uma solicitação de análise de espectrometria de massa, ele irá fazer uma chamada na FastAPI que está no cluster Kubernetes. Para não sobrecarregar o cluster foi colocado um ALB, que irá rotear o tráfego para os pods do cluster Kubernetes.
 6. Quando a API receber a solicitação ela irá invocar uma chamada Lambda que irá acionar o Step Functions para o processamento dos dados.
 7. O Step Functions consegue coordenar várias etapas, como o pré-processamento, a análise, e o pós-processamento. Sendo assim, ele poderá invocar uma função lambda ou realizar o processamento no AWS Batch, isso irá depender da necessidade da tarefa.
 8. Caso ele acione o Batch, este irá realizar o provisionamento dos recursos necessários para o processamento dos dados.
-9. Os dados gerados serão armazenados no bucket S3 'Resultado Análise', para caso o usuário queira consultar os resultados da sua consulta. Este bucket será configurado com um lifecycle de 5 anos para consultas.
+9. Os dados gerados serão armazenados no bucket S3 'Resultado Análise', para caso o usuário queira consultar os resultados da sua consulta. Inicialmente os arquivos serão armazenados no S3 Standard, após 30 dias será migrado para o S3 Standard Infrequent Access, após 90 dias será movido para o S3 Glacier, e por fim após 180 dias será movido para o S3 Glacier Deep Archive. Os arquivos serão deletados após 5 anos.
 10. Informações como análise, informações do usuário, status de execução, entre outros dados, serão armazenados no RDS Multi-AZ para garantir maior disponibilidade dos dados.
 
 ## Observações
 
-- Os recursos computacionais e o bando de dados serão protegidos por grupos de segurança, para controlar o fluxo de entrada nos serviços.
+- Os recursos computacionais e o banco de dados serão protegidos por grupos de segurança, para controlar o fluxo de entrada nos serviços.
 - Toda a infraestrutura poderá ser monitorada pelo CloudWatch, realizando a coleta de desempenho e saúde dos recursos.
 - A infraestrutura foi projetada para ter alta disponibilidade e garantir o backup dos dados.
 - Através do AWS Cost Explorer poderá ter insights de custos e realizar o monitoramento de gastos.
